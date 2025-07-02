@@ -2,6 +2,7 @@ import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import { Button } from '@/components/ui/button'
 import { motion } from 'framer-motion'
+import { useNavigate } from 'react-router-dom'
 
 import vinyl from '@/assets/vinyl.png'
 import waveform from '@/assets/waveform.svg'
@@ -10,8 +11,10 @@ import cassette from '@/assets/cassette.png'
 import musicCard from '@/assets/musiccard.png'
 
 export default function LandingPage() {
+  const navigate = useNavigate()
+
   return (
-    <div className="bg-[#1A1A1A] text-white min-h-screen flex flex-col">
+    <div className="bg-gradient-to-b from-black via-[#1A1A1A] to-[#2A2A2A] text-white min-h-screen flex flex-col">
       <Navbar />
 
       <main className="flex-1">
@@ -34,11 +37,14 @@ export default function LandingPage() {
             Your Top 5. Shared.
           </h1>
           <p className="text-gray-400 max-w-xl mb-6">
-            echoes is a brutalist music social platform where users post their
+            5-Echoes is a brutalist music social platform where users post their
             top tracks, artists, and vibe. Vote. Discover. Connect.
           </p>
           <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-            <Button className="bg-blue-600 text-white hover:bg-blue-700">
+            <Button
+              onClick={() => navigate('/auth')}
+              className="bg-gray-900 border border-gray-600 text-white hover:bg-white hover:text-black transition-all"
+            >
               Get Started
             </Button>
           </motion.div>
@@ -145,7 +151,10 @@ export default function LandingPage() {
             Sign in now to claim your slot in the hall of vibe.
           </p>
           <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-            <Button className="bg-blue-600 text-white hover:bg-blue-700">
+            <Button
+              onClick={() => navigate('/auth')}
+              className="bg-gray-900 border border-gray-600 text-white hover:bg-white hover:text-black transition-all"
+            >
               Join Now
             </Button>
           </motion.div>
