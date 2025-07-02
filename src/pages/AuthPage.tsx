@@ -1,28 +1,31 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import {
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-  signInWithPopup,
-} from 'firebase/auth'
-import { auth, provider } from '@/lib/firebase'
 import { Button } from '@/components/ui/button'
 import { motion } from 'framer-motion'
+import {
+  loginWithEmail,
+  registerWithEmail,
+  loginWithGoogle,
+} from '@/features/auth/firebaseAuth'
 
 export default function AuthPage() {
   const [isSignup, setIsSignup] = useState(false)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
+  const [loading, setLoading] = useState(false)
+
   const navigate = useNavigate()
 
   const handleEmailAuth = async (e: React.FormEvent) => {
     e.preventDefault()
+    setLoading(true)
+
     try {
       if (isSignup) {
-        await createUserWithEmailAndPassword(auth, email, password)
+        await registerWithEmail(email, password)
       } else {
-        await signInWithEmailAndPassword(auth, email, password)
+        await loginWithEmail(email, password)
       }
       navigate('/home')
     } catch (err: unknown) {
@@ -31,12 +34,16 @@ export default function AuthPage() {
       } else {
         setError('An unexpected error occurred.')
       }
+    } finally {
+      setLoading(false)
     }
   }
 
   const handleGoogleAuth = async () => {
+    setLoading(true)
+
     try {
-      await signInWithPopup(auth, provider)
+      await loginWithGoogle()
       navigate('/home')
     } catch (err: unknown) {
       if (err instanceof Error) {
@@ -44,6 +51,8 @@ export default function AuthPage() {
       } else {
         setError('An unexpected error occurred.')
       }
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -94,8 +103,9 @@ export default function AuthPage() {
             <Button
               type="submit"
               className="w-full bg-gray-900 border border-gray-600 text-white hover:bg-white hover:text-black transition-all"
+              disabled={loading}
             >
-              {isSignup ? 'Sign Up' : 'Sign In'}
+              {loading ? 'Loading...' : isSignup ? 'Sign Up' : 'Sign In'}
             </Button>
           </motion.div>
         </form>
@@ -119,9 +129,10 @@ export default function AuthPage() {
           <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
             <Button
               onClick={handleGoogleAuth}
-              className="w-full bg-gray-800 text-white border border-gray-600 hover:bg-white hover:text-black transition-all"
+              className="w-full bg-gray-800 text-white border border-gray-600 hover:bg-white hover:text-black"
+              disabled={loading}
             >
-              Continue with Google
+              {loading ? 'Loading...' : 'Continue with Google'}
             </Button>
           </motion.div>
         </div>
