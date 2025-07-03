@@ -1,69 +1,69 @@
-# React + TypeScript + Vite
+# 🎧 5-Echoes — A Brutalist Social Music Platform
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+5-Echoes is a **minimal, brutalist-style social platform** where users share their **Top 5 music tracks, favorite artists, and genre**.  
+It's built with **React + TypeScript**, **TailwindCSS**, **Firebase**, and **Framer Motion**.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## ✨ Features
 
-## Expanding the ESLint configuration
+- 🔐 **Authentication**
+  - Google OAuth + Email/Password
+  - Firebase Auth persistence
+- 👤 **Profile System**
+  - Custom username
+  - Top 5 tracks & artists input
+  - Genre selector (including "Other")
+  - Social handles: Spotify, Instagram, Facebook
+  - Publish toggle to appear in the feed
+- 📄 **Live Preview**
+  - Realtime preview of your music card while editing
+- 🖼 **Brutalist Design**
+  - Bold monochrome UI
+  - Animated transitions via Framer Motion
+- 🔁 **Routing**
+  - Landing → Auth → Profile → Home flow
+  - Protected routes for authenticated views
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+---
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## 🚀 Tech Stack
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+| Layer      | Tech                          |
+| ---------- | ----------------------------- |
+| Frontend   | React, TypeScript             |
+| Styling    | TailwindCSS                   |
+| Animations | Framer Motion                 |
+| Forms      | React Hook Form + Zod         |
+| Backend    | Firebase (Auth + Firestore)   |
+| State      | LocalStorage + Firebase state |
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+---
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## 🧑‍💻 Getting Started
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+```bash
+# 1. Clone
+git clone https://github.com/crazyhaller/echoes.git && cd echoes
 
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+# 2. Install dependencies
+npm install
+
+# 3. Setup Firebase
+# - Enable Email/Password + Google auth
+# - Create Firestore & set basic rules
+# - Copy config to `.env`
+
+# 4. Start dev server
+npm run dev
+
+---
+
+## 🔐 Environment Variables
+VITE_FIREBASE_API_KEY=...
+VITE_FIREBASE_AUTH_DOMAIN=...
+VITE_FIREBASE_PROJECT_ID=...
+VITE_FIREBASE_STORAGE_BUCKET=...
+VITE_FIREBASE_MESSAGING_SENDER_ID=...
+VITE_FIREBASE_APP_ID=...
 ```
