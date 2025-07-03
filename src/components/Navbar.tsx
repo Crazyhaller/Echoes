@@ -37,7 +37,7 @@ export default function Navbar() {
             onClick={() => navigate('/auth')}
             className="bg-gray-900 border border-gray-600 text-white hover:bg-white hover:text-black transition-all"
           >
-            Login with Google
+            Sign In
           </Button>
         </motion.div>
       ) : (

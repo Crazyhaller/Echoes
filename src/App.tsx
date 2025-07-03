@@ -9,6 +9,7 @@ import AuthPage from './pages/AuthPage'
 import HomePage from './pages/HomePage'
 import { useAuth } from './hooks/useAuth'
 import type { JSX } from 'react'
+import ProfilePage from './pages/ProfilePage'
 
 function ProtectedRoute({ children }: { children: JSX.Element }) {
   const { user, loading } = useAuth()
@@ -27,6 +28,14 @@ function App() {
           element={
             <ProtectedRoute>
               <HomePage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <ProfilePage />
             </ProtectedRoute>
           }
         />

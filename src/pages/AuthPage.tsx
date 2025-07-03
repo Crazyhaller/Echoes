@@ -22,12 +22,11 @@ export default function AuthPage() {
     setLoading(true)
 
     try {
-      if (isSignup) {
-        await registerWithEmail(email, password)
-      } else {
-        await loginWithEmail(email, password)
-      }
-      navigate('/home')
+      const status = isSignup
+        ? await registerWithEmail(email, password) // returns 'new'
+        : await loginWithEmail(email, password).then(() => 'existing')
+
+      navigate(status === 'new' ? '/profile' : '/home')
     } catch (err: unknown) {
       if (err instanceof Error) {
         setError(err.message)
@@ -43,8 +42,8 @@ export default function AuthPage() {
     setLoading(true)
 
     try {
-      await loginWithGoogle()
-      navigate('/home')
+      const status = await loginWithGoogle()
+      navigate(status === 'new' ? '/profile' : '/home')
     } catch (err: unknown) {
       if (err instanceof Error) {
         setError(err.message)
