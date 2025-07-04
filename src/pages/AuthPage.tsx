@@ -6,7 +6,7 @@ import {
   loginWithEmail,
   registerWithEmail,
   loginWithGoogle,
-} from '@/features/auth/firebaseAuth'
+} from '@/lib/firebaseAuth'
 
 export default function AuthPage() {
   const [isSignup, setIsSignup] = useState(false)

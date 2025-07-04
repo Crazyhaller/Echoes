@@ -1,4 +1,3 @@
-// routes/ProtectedRoute.tsx
 import { useAuth } from '@/hooks/useAuth'
 import type { JSX } from 'react'
 import { Navigate } from 'react-router-dom'

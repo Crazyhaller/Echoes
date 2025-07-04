@@ -7,7 +7,7 @@ export interface UserProfile {
   spotify?: string
   instagram?: string
   facebook?: string
-  createdAt: string // ISO string or Firestore timestamp
+  createdAt: string
 }
 
 export interface Vote {

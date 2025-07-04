@@ -4,11 +4,10 @@ import {
   signInWithPopup,
 } from 'firebase/auth'
 import { doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore'
-import { auth, db, provider } from '@/lib/firebase'
+import { auth, db, provider } from '@/lib/firebaseConfig'
 
-/**
- * Registers a new user with email/password and creates their Firestore profile.
- */
+// Registers a new user with email/password and creates their Firestore profile.
+
 export async function registerWithEmail(
   email: string,
   password: string
@@ -30,18 +29,16 @@ export async function registerWithEmail(
   return 'new'
 }
 
-/**
- * Logs in an existing user with email/password.
- */
+// Logs in an existing user with email/password.
+
 export async function loginWithEmail(email: string, password: string) {
   const res = await signInWithEmailAndPassword(auth, email, password)
   localStorage.setItem('isNewUser', 'false')
   return res.user
 }
 
-/**
- * Authenticates using Google OAuth and initializes Firestore profile if needed.
- */
+// Authenticates using Google OAuth and initializes Firestore profile if needed.
+
 export async function loginWithGoogle(): Promise<'new' | 'existing'> {
   const result = await signInWithPopup(auth, provider)
   const userRef = doc(db, 'users', result.user.uid)
