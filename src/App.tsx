@@ -11,6 +11,7 @@ import { useAuth } from './hooks/useAuth'
 import type { JSX } from 'react'
 import ProfilePage from './pages/ProfilePage'
 import UserProfilePage from './pages/UserProfilePage'
+import RedirectToHomeIfAuth from './lib/Redirect'
 
 function ProtectedRoute({ children }: { children: JSX.Element }) {
   const { user, loading } = useAuth()
@@ -22,8 +23,15 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<LandingPage />} />
         <Route path="/auth" element={<AuthPage />} />
+        <Route
+          path="/"
+          element={
+            <RedirectToHomeIfAuth>
+              <LandingPage />
+            </RedirectToHomeIfAuth>
+          }
+        />
         <Route
           path="/home"
           element={

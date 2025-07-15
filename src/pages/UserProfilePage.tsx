@@ -11,11 +11,14 @@ interface UserCardData {
   genre: string
   topTracks: string[]
   topArtists: string[]
+  bio?: string
+  tags?: string[]
   spotify?: string
   instagram?: string
   facebook?: string
   likes?: number
   dislikes?: number
+  createdAt?: { seconds: number }
 }
 
 export default function UserProfilePage() {
@@ -29,7 +32,7 @@ export default function UserProfilePage() {
       const ref = doc(db, 'users', uid)
       const snap = await getDoc(ref)
       if (snap.exists()) {
-        setUserData({ uid, ...(snap.data() as Omit<UserCardData, 'uid'>) })
+        setUserData(snap.data() as UserCardData)
       }
       setLoading(false)
     }
@@ -48,7 +51,37 @@ export default function UserProfilePage() {
           <p className="text-gray-500 italic">User not found.</p>
         ) : (
           <>
-            <h1 className="text-2xl font-bold mb-6">@{userData.username}</h1>
+            <h1 className="text-3xl font-bold mb-2">@{userData.username}</h1>
+
+            {userData.bio && (
+              <p className="text-gray-400 italic mb-4">{userData.bio}</p>
+            )}
+
+            {Array.isArray(userData.tags) && userData.tags.length > 0 && (
+              <div className="flex gap-2 flex-wrap mb-4">
+                {userData.tags.map((tag, i) => (
+                  <span
+                    key={i}
+                    className="text-xs bg-gray-800 px-2 py-1 border border-gray-600 text-white"
+                  >
+                    #{tag}
+                  </span>
+                ))}
+              </div>
+            )}
+
+            <p className="text-xs text-gray-600 mb-6">
+              Joined{' '}
+              {userData.createdAt
+                ? new Date(
+                    userData.createdAt.seconds * 1000
+                  ).toLocaleDateString('en-US', {
+                    month: 'long',
+                    year: 'numeric',
+                  })
+                : 'Unknown'}
+            </p>
+
             <MusicCardPreview
               uid={userData.uid}
               username={userData.username}

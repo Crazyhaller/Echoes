@@ -72,11 +72,15 @@ export default function ProfilePage() {
           setValue('genre', 'Other')
           setCustomGenre(data.genre)
         }
+
+        if (data.bio) setValue('bio', data.bio)
+        if (data.tags) setValue('tags', data.tags.join(', '))
       }
       if (localStorage.getItem('isNewUser') === 'true') {
         usernameRef.current?.focus()
         localStorage.removeItem('isNewUser')
       }
+
       setLoading(false)
     }
     loadProfile()
@@ -85,8 +89,32 @@ export default function ProfilePage() {
   const onSubmit = async (form: ProfileFormValues) => {
     if (!user) return
     const ref = doc(db, 'users', user.uid)
-    const genreToSave = form.genre === 'Other' ? customGenre : form.genre
-    await updateDoc(ref, { ...form, genre: genreToSave })
+
+    // Safely normalize genre
+    const genreToSave = form.genre === 'Other' ? customGenre.trim() : form.genre
+
+    // Normalize comma-separated tags input into array
+    const rawTags = typeof form.tags === 'string' ? form.tags : ''
+    const tagsArray = rawTags
+      .split(',')
+      .map((tag) => tag.trim())
+      .filter(Boolean) // removes empty strings
+
+    // Build payload explicitly to avoid field mismatches
+    const payload = {
+      username: form.username,
+      topTracks: form.topTracks,
+      topArtists: form.topArtists,
+      genre: genreToSave,
+      spotify: form.spotify || '',
+      instagram: form.instagram || '',
+      facebook: form.facebook || '',
+      publish: form.publish,
+      bio: form.bio || '',
+      tags: tagsArray,
+    }
+
+    await updateDoc(ref, payload)
     navigate('/home')
   }
 
@@ -143,6 +171,23 @@ export default function ProfilePage() {
             )}
           </div>
         ))}
+
+        <textarea
+          {...register('bio')}
+          placeholder="Write a short bio..."
+          className="w-full p-3 bg-black border border-gray-700 h-24 resize-none"
+          maxLength={200}
+        />
+        {errors.bio && (
+          <p className="text-sm text-red-400">{errors.bio.message}</p>
+        )}
+
+        <input
+          type="text"
+          {...register('tags')}
+          placeholder="Tags (comma separated, e.g. producer, collector)"
+          className="w-full p-3 bg-black border border-gray-700"
+        />
 
         <div className="mt-6">
           <select
@@ -214,6 +259,7 @@ export default function ProfilePage() {
 
       {watch('publish') && (
         <MusicCardPreview
+          uid={user?.uid || 'anon'}
           username={watch('username')}
           genre={watch('genre') === 'Other' ? customGenre : watch('genre')}
           topTracks={watch('topTracks')}
