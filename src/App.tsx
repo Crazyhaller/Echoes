@@ -10,6 +10,7 @@ import HomePage from './pages/HomePage'
 import { useAuth } from './hooks/useAuth'
 import type { JSX } from 'react'
 import ProfilePage from './pages/ProfilePage'
+import UserProfilePage from './pages/UserProfilePage'
 
 function ProtectedRoute({ children }: { children: JSX.Element }) {
   const { user, loading } = useAuth()
@@ -39,6 +40,7 @@ function App() {
             </ProtectedRoute>
           }
         />
+        <Route path="/user/:uid" element={<UserProfilePage />} />
       </Routes>
     </Router>
   )

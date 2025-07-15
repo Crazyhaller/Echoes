@@ -3,6 +3,7 @@ import { collection, getDocs, query, where } from 'firebase/firestore'
 import { db } from '@/lib/firebaseConfig'
 import MusicCardPreview from '@/components/MusicCardPreview'
 import Navbar from '@/components/Navbar'
+import { useNavigate } from 'react-router-dom'
 
 interface UserCardData {
   uid: string
@@ -25,6 +26,7 @@ export default function HomePage() {
     'recent'
   )
   const [genreFilter, setGenreFilter] = useState('')
+  const navigate = useNavigate()
 
   useEffect(() => {
     const fetchCards = async () => {
@@ -130,6 +132,14 @@ export default function HomePage() {
                 likes={card.likes}
                 dislikes={card.dislikes}
                 variant="grid"
+                actions={
+                  <button
+                    onClick={() => navigate(`/user/${card.uid}`)}
+                    className="mt-4 text-xs underline text-blue-400 hover:text-white"
+                  >
+                    View Profile
+                  </button>
+                }
               />
             ))}
           </div>

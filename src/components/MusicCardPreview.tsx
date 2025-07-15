@@ -16,6 +16,7 @@ interface Props {
   likes?: number
   dislikes?: number
   variant?: 'profile' | 'grid'
+  actions?: React.ReactNode
 }
 
 export default function MusicCardPreview({
@@ -30,6 +31,7 @@ export default function MusicCardPreview({
   likes = 0,
   dislikes = 0,
   variant = 'profile',
+  actions,
 }: Props) {
   const { user } = useAuth()
   const [hasVoted, setHasVoted] = useState(false)
@@ -111,6 +113,8 @@ export default function MusicCardPreview({
           {instagram && <p>Instagram: @{instagram}</p>}
           {facebook && <p>Facebook: @{facebook}</p>}
         </div>
+
+        {actions && <div className="mt-4">{actions}</div>}
 
         {variant === 'grid' && (
           <div className="mt-6 flex gap-4 text-sm text-gray-400">
