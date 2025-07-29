@@ -16,6 +16,8 @@ export default function ProfilePage() {
   const usernameRef = useRef<HTMLInputElement>(null)
   const [loading, setLoading] = useState(true)
   const [customGenre, setCustomGenre] = useState('')
+  const [tagInput, setTagInput] = useState('')
+  const [tags, setTags] = useState<string[]>([])
 
   const genres = [
     'Rock',
@@ -90,17 +92,18 @@ export default function ProfilePage() {
     if (!user) return
     const ref = doc(db, 'users', user.uid)
 
-    // Safely normalize genre
     const genreToSave = form.genre === 'Other' ? customGenre.trim() : form.genre
 
-    // Normalize comma-separated tags input into array
     const rawTags = typeof form.tags === 'string' ? form.tags : ''
-    const tagsArray = rawTags
-      .split(',')
-      .map((tag) => tag.trim())
-      .filter(Boolean) // removes empty strings
+    const tagsArray =
+      rawTags?.trim() === ''
+        ? []
+        : rawTags
+            .split(',')
+            .map((tag) => tag.trim())
+            .filter(Boolean)
+            .slice(0, 5) // ⬅️ limit to 5 tags
 
-    // Build payload explicitly to avoid field mismatches
     const payload = {
       username: form.username,
       topTracks: form.topTracks,
@@ -118,13 +121,29 @@ export default function ProfilePage() {
     navigate('/home')
   }
 
+  useEffect(() => {
+    const existing = watch('tags')
+    if (existing) {
+      const parsed = existing
+        .split(',')
+        .map((t) => t.trim())
+        .filter(Boolean)
+        .slice(0, 5)
+      setTags(parsed)
+    }
+  }, [loading])
+
+  useEffect(() => {
+    setValue('tags', tags.join(', '))
+  }, [tags])
+
   if (loading) return null
 
   return (
     <div className="min-h-screen p-8 text-white bg-gradient-to-b from-black via-[#1A1A1A] to-[#2A2A2A]">
       <h1 className="text-3xl font-bold mb-6">Edit Your Profile</h1>
 
-      <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
+      <form className="space-y-4 mb-2" onSubmit={handleSubmit(onSubmit)}>
         <div>
           <input
             {...register('username')}
@@ -182,12 +201,46 @@ export default function ProfilePage() {
           <p className="text-sm text-red-400">{errors.bio.message}</p>
         )}
 
-        <input
-          type="text"
-          {...register('tags')}
-          placeholder="Tags (comma separated, e.g. producer, collector)"
-          className="w-full p-3 bg-black border border-gray-700"
-        />
+        <div className="mt-6">
+          <label className="block text-sm font-medium mb-1">
+            Tags (up to 5)
+          </label>
+          <div className="flex flex-wrap gap-2 mb-2">
+            {tags.map((tag, i) => (
+              <span
+                key={i}
+                className="bg-gray-700 text-white px-3 py-1 rounded-full text-xs flex items-center gap-1"
+              >
+                {tag}
+                <button
+                  type="button"
+                  onClick={() =>
+                    setTags(tags.filter((_, index) => index !== i))
+                  }
+                  className="text-red-300 hover:text-red-500"
+                >
+                  ×
+                </button>
+              </span>
+            ))}
+          </div>
+          <input
+            value={tagInput}
+            onChange={(e) => setTagInput(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ',') {
+                e.preventDefault()
+                const newTag = tagInput.trim()
+                if (newTag && !tags.includes(newTag) && tags.length < 5) {
+                  setTags([...tags, newTag])
+                }
+                setTagInput('')
+              }
+            }}
+            placeholder="Type tag and press enter"
+            className="w-full p-3 bg-black border border-gray-700"
+          />
+        </div>
 
         <div className="mt-6">
           <select

@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { voteCard } from '@/lib/voteService'
 import { useAuth } from '@/hooks/useAuth'
 import LikedByModal from '@/components/LikedByModal'
+import ProfileModal from '@/components/ProfileModal'
 
 interface Props {
   uid: string
@@ -13,10 +14,11 @@ interface Props {
   spotify?: string
   instagram?: string
   facebook?: string
+  bio?: string
+  tags?: string[]
   likes?: number
   dislikes?: number
   variant?: 'profile' | 'grid'
-  actions?: React.ReactNode
 }
 
 export default function MusicCardPreview({
@@ -27,11 +29,12 @@ export default function MusicCardPreview({
   topArtists,
   spotify,
   instagram,
+  bio,
+  tags,
   facebook,
   likes = 0,
   dislikes = 0,
   variant = 'profile',
-  actions,
 }: Props) {
   const { user } = useAuth()
   const [hasVoted, setHasVoted] = useState(false)
@@ -39,9 +42,15 @@ export default function MusicCardPreview({
   const [localDislikes, setLocalDislikes] = useState(dislikes)
   const [showLiked, setShowLiked] = useState(false)
   const [showDisliked, setShowDisliked] = useState(false)
+  const [showProfile, setShowProfile] = useState(false)
 
   const handleVote = async (type: 'like' | 'dislike') => {
     if (!user || user.uid === uid) return
+
+    if (!user) {
+      console.warn('No user, cannot vote')
+      return
+    }
 
     const result = await voteCard(user.uid, uid, type)
 
@@ -114,7 +123,33 @@ export default function MusicCardPreview({
           {facebook && <p>Facebook: @{facebook}</p>}
         </div>
 
-        {actions && <div className="mt-4">{actions}</div>}
+        <div className="mt-4">
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={() => setShowProfile(true)}
+            className="mt-4 w-full backdrop-blur-md bg-white/5 text-white border border-gray-600 px-4 py-2 text-sm font-semibold hover:bg-white hover:text-black transition-all duration-300"
+          >
+            View Profile →
+          </motion.button>
+        </div>
+
+        {showProfile && (
+          <ProfileModal
+            onClose={() => setShowProfile(false)}
+            user={{
+              username,
+              genre,
+              topTracks,
+              topArtists,
+              spotify,
+              instagram,
+              facebook,
+              bio,
+              tags,
+            }}
+          />
+        )}
 
         {variant === 'grid' && (
           <div className="mt-6 flex gap-4 text-sm text-gray-400">

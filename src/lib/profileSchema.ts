@@ -10,7 +10,20 @@ export const profileSchema = z.object({
   facebook: z.string().optional(),
   publish: z.boolean(),
   bio: z.string().max(200).optional(),
-  tags: z.array(z.string()).optional(),
+  tags: z
+    .string()
+    .optional()
+    .refine(
+      (val) => {
+        if (!val) return true
+        const tags = val
+          .split(',')
+          .map((t) => t.trim())
+          .filter(Boolean)
+        return tags.length <= 5
+      },
+      { message: 'You can enter up to 5 tags only' }
+    ),
 })
 
 export type ProfileFormValues = z.infer<typeof profileSchema>
